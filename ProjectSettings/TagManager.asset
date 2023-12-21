@@ -7,6 +7,9 @@ TagManager:
   - Key
   - Door
   - NavMesh
+  - Panel
+  - Button
+  - Butto2
   layers:
   - Default
   - TransparentFX
