@@ -10,48 +10,49 @@ public class EnemyMovement : MonoBehaviour
     private NavMeshAgent agent;
     public Transform[] waypoints;
     public Transform targetToFollow;
-    public float followRadius = 15f;
+    public float followRadius = 10f;
     public Animator animator;
     public GameObject player;
+    bool isAttacking;
+    bool IsMovingToRandomPoint;
+    public float AttackRange = 3.0f;
+    int randomIndex;
+    public float TimeSetRandomPoint = 1.0f;
     void Start()
     {
+        randomIndex = 0;
+        IsMovingToRandomPoint = false;
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        SetRandomDestination();
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
     void SetRandomDestination()
     {
-        if (targetToFollow != null && Vector3.Distance(transform.position, targetToFollow.position) <= followRadius)
+        if (waypoints.Length > 0 )
         {
-            agent.SetDestination(targetToFollow.position);
-        }
-        else if (waypoints.Length > 0)
-        {
-            int randomIndex = Random.Range(0, waypoints.Length);
-            agent.SetDestination(waypoints[randomIndex].position);
+            if (Vector3.Distance(transform.position, waypoints[randomIndex].position) > 0.1f)
+            {
+                animator.SetBool("Walk", true);
+                agent.SetDestination(waypoints[randomIndex].position);
+                IsMovingToRandomPoint = true;
+            }
+            else
+            {
+                IsMovingToRandomPoint = false;
+                randomIndex = Random.Range(0, waypoints.Length);
+            }
         }
     }
-
-
     void StartAttackAnimation()
     {
-        animator.SetTrigger("Atack");
-
-        if (player != null)
-        {
-            float attackAnimationLength = 2.0f; 
-            Invoke("DestroyPlayer", attackAnimationLength);
-        }
+        isAttacking = true;
+        Debug.Log("Atack");
+        animator.SetTrigger("Attack");
     }
-
-    void DestroyPlayer()
+    void IsAttacked()
     {
-        if (player != null)
-        {
-            Destroy(player);
-        }
+        isAttacking = false;
     }
     void Update()
     {
@@ -60,27 +61,34 @@ public class EnemyMovement : MonoBehaviour
             float distanceToPlayer = Vector3.Distance(transform.position, targetToFollow.position);
             if (distanceToPlayer <= followRadius)
             {
-                agent.SetDestination(targetToFollow.position);
-                animator.SetBool("Walk", true);
-                if (distanceToPlayer <= 2.0f)
+
+                if (distanceToPlayer > AttackRange && !isAttacking)
                 {
+                    IsMovingToRandomPoint = false;
+                    agent.SetDestination(targetToFollow.position);
+                    animator.SetBool("Walk", true);
+                }
+                else
+                {
+                    animator.SetBool("Walk", false);
                     StartAttackAnimation();
                 }
+
             }
-        }
+            else
+            {
+                if (agent.remainingDistance < agent.stoppingDistance)
+                {
+                    animator.SetBool("Walk", true);
+                    agent.SetDestination(waypoints[randomIndex].position);
 
-        if (!agent.pathPending && agent.remainingDistance < 0.5f)
-        {
-            SetRandomDestination();
-        }
+                }
+                else
+                {
+                    randomIndex = Random.Range(0, waypoints.Length);
+                }
+            }
 
-        if (agent.remainingDistance > 0.5f)
-        {
-            animator.SetBool("Walk", true);
-        }
-        else
-        {
-            animator.SetBool("Walk", false);
         }
     }
 }

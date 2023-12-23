@@ -10,6 +10,7 @@ TagManager:
   - Panel
   - Button
   - Butto2
+  - Attack
   layers:
   - Default
   - TransparentFX

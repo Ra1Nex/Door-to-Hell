@@ -26,8 +26,6 @@ public class ObjectInteraction : MonoBehaviour
                 if (hit.collider.CompareTag("Butto2") && IsButtonActive)
                 {
                     animator.SetBool("IsOpen", false);
-                    animator.SetBool("Up", true);
-
                 }
             }
         }

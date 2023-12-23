@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Utility;
 using Random = UnityEngine.Random;
+using UnityEngine.SceneManagement;
 
 namespace UnityStandardAssets.Characters.FirstPerson
 {
@@ -45,7 +46,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_NextStep;
         private bool m_Jumping;
         private AudioSource m_AudioSource;
-
+        
+        public void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Attack"))
+            {
+                SceneManager.LoadScene(3);
+            }
+        }
         private void Start()
         {
             m_CharacterController = GetComponent<CharacterController>();

@@ -21,7 +21,11 @@ public class STARTGAME : MonoBehaviour
     }
     public void options()
     {
-        SceneManager.LoadScene(31);
+
+    }
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
 }
