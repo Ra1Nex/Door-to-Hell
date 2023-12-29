@@ -11,6 +11,10 @@ TagManager:
   - Button
   - Butto2
   - Attack
+  - Lkm
+  - light
+  - FlashLight
+  - Disco
   layers:
   - Default
   - TransparentFX
